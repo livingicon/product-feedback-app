@@ -11,36 +11,72 @@ datasource db {
   relationMode = "prisma"
 }
 
+// // setting up db data structure
+
+// Prisma Sample Schema
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+
+  @@index(authorId)
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+
+  @@index(userId)
+}
+
 model User {
-  id          Int       @id @default(autoincrement())
-  image       String?
-  name        String
-  username    String    @unique
-  comments    Comment[]
-
-  @@index([username])
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  name    String?
+  posts   Post[]
+  profile Profile?
 }
 
-model Comment {
-  id          Int       @id @default(autoincrement())
-  content     String
-  user        User?     @relation(fields: [userId], references: [id])
-  userId      Int?
-  productRequest ProductRequest @relation(fields: [productRequestId], references: [id])
-  productRequestId Int
+// // My Attempt Schema
 
-  @@index([userId])
-  @@index([productRequestId])
-}
+// model User {
+//   id          Int       @id @default(autoincrement())
+//   image       String?
+//   name        String
+//   username    String    @unique
+//   comments    Comment[]
 
-model ProductRequest {
-  id          Int       @id @default(autoincrement())
-  title       String
-  category    String
-  upvotes     Int
-  status      String
-  description String
-  comments    Comment[]
+//   @@index([username])
+// }
 
-  @@index([status])
-}
+// model Comment {
+//   id          Int       @id @default(autoincrement())
+//   content     String
+//   user        User?     @relation(fields: [userId], references: [id])
+//   userId      Int?
+//   productRequest ProductRequest @relation(fields: [productRequestId], references: [id])
+//   productRequestId Int
+
+//   @@index([userId])
+//   @@index([productRequestId])
+// }
+
+// model ProductRequest {
+//   id          Int       @id @default(autoincrement())
+//   title       String
+//   category    String
+//   upvotes     Int
+//   status      String
+//   description String
+//   comments    Comment[]
+
+//   @@index([status])
+// }
